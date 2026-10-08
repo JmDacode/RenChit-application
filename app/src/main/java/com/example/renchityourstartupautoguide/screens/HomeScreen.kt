@@ -8,8 +8,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun HomeScreen(
+    username: String,
     onFindRepair: () -> Unit,
-    onViewSaved: () -> Unit
+    onViewSaved: () -> Unit,
+    onLogout: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -24,6 +26,8 @@ fun HomeScreen(
             "Beginner-friendly guides for common vehicle problems.",
             style = MaterialTheme.typography.bodySmall
         )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text("Logged in as $username", style = MaterialTheme.typography.bodySmall)
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = onFindRepair, modifier = Modifier.fillMaxWidth()) {
             Text("Find a Repair Guide")
@@ -31,6 +35,10 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = onViewSaved, modifier = Modifier.fillMaxWidth()) {
             Text("My Saved Repairs")
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth()) {
+            Text("Log Out")
         }
     }
 }

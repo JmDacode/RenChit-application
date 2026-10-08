@@ -9,24 +9,59 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.renchityourstartupautoguide.screens.AddEditSavedRepairScreen
 import com.example.renchityourstartupautoguide.screens.HomeScreen
+import com.example.renchityourstartupautoguide.screens.LoginScreen
 import com.example.renchityourstartupautoguide.screens.ProblemTaskListScreen
+import com.example.renchityourstartupautoguide.screens.RegisterScreen
 import com.example.renchityourstartupautoguide.screens.RepairCategoriesScreen
 import com.example.renchityourstartupautoguide.screens.RepairGuideScreen
 import com.example.renchityourstartupautoguide.screens.SavedRepairsScreen
 import com.example.renchityourstartupautoguide.screens.VehicleTypeScreen
+import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
 import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
 
 @Composable
 fun RenChitApp() {
     val navController = rememberNavController()
     val viewModel: RenChitViewModel = viewModel()
+    val authViewModel: AuthViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = "login") {
+
+        composable("login") {
+            LoginScreen(
+                authViewModel = authViewModel,
+                onLoggedIn = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onGoToRegister = { navController.navigate("register") }
+            )
+        }
+
+        composable("register") {
+            RegisterScreen(
+                authViewModel = authViewModel,
+                onRegistered = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
 
         composable("home") {
             HomeScreen(
+                username = authViewModel.currentUser?.username ?: "",
                 onFindRepair = { navController.navigate("vehicleType") },
-                onViewSaved = { navController.navigate("savedRepairs") }
+                onViewSaved = { navController.navigate("savedRepairs") },
+                onLogout = {
+                    authViewModel.logout()
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                }
             )
         }
 
