@@ -1,5 +1,7 @@
 package com.example.renchityourstartupautoguide.nav
 
+import androidx.compose.ui.platform.LocalContext
+import com.example.renchityourstartupautoguide.viewmodel.RenChitFactory
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -18,11 +20,20 @@ import com.example.renchityourstartupautoguide.screens.SavedRepairsScreen
 import com.example.renchityourstartupautoguide.screens.VehicleTypeScreen
 import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
 import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
+import com.example.renchityourstartupautoguide.viewmodel.RenChitApplication
 
 @Composable
 fun RenChitApp() {
     val navController = rememberNavController()
-    val viewModel: RenChitViewModel = viewModel()
+
+    val context = LocalContext.current.applicationContext
+
+    val application = context as RenChitApplication
+    val repository = application.repository
+
+    val viewModel: RenChitViewModel =
+        viewModel(factory = RenChitFactory(repository))
+
     val authViewModel: AuthViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = "login") {

@@ -5,11 +5,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
 import com.example.renchityourstartupautoguide.viewmodel.displayCategory
 import com.example.renchityourstartupautoguide.viewmodel.displayVehicleType
-import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
+import com.example.renchityourstartupautoguide.ui.theme.DeepCharcoal
+import com.example.renchityourstartupautoguide.ui.theme.SandGold
 
 @Composable
 fun SavedRepairsScreen(
@@ -19,35 +24,88 @@ fun SavedRepairsScreen(
     onEdit: (Int) -> Unit,
     onBack: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        OutlinedButton(onClick = onBack) { Text("Back") }
+    val savedRepairs by viewModel.savedRepairs.collectAsStateWithLifecycle()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        OutlinedButton(onClick = onBack) {
+            Text("Back")
+        }
+
         Spacer(modifier = Modifier.height(8.dp))
-        Text("My Saved Repairs", style = MaterialTheme.typography.headlineSmall)
+
+        Text(
+            "My Saved Repairs",
+            style = MaterialTheme.typography.headlineSmall
+        )
+
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (viewModel.savedRepairs.isEmpty()) {
+        if (savedRepairs.isEmpty()) {
             Text("No saved repairs yet.")
         } else {
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(viewModel.savedRepairs, key = { it.id }) { saved ->
-                    Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.padding(16.dp)) {
+                items(savedRepairs, key = { it.id }) { saved ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = DeepCharcoal
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
                             Text(
-                                "${displayVehicleType(saved.vehicleType)} \u00b7 ${displayCategory(saved.category)}",
-                                style = MaterialTheme.typography.bodySmall
+                                "${displayVehicleType(saved.vehicleType)} · " +
+                                        displayCategory(saved.category),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.White
                             )
-                            Text(saved.problemTask, style = MaterialTheme.typography.titleMedium)
+
+                            Text(
+                                text = saved.problemTask,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = SandGold
+                            )
+
                             if (saved.userNote.isNotBlank()) {
-                                Text("Note: ${saved.userNote}", style = MaterialTheme.typography.bodySmall)
+                                Text(
+                                    text = "Note: ${saved.userNote}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.White
+                                )
                             }
+
                             Spacer(modifier = Modifier.height(8.dp))
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Button(onClick = { onView(saved.id) }) { Text("View") }
-                                OutlinedButton(onClick = { onEdit(saved.id) }) { Text("Edit") }
-                                OutlinedButton(onClick = { viewModel.deleteSavedRepair(saved.id) }) { Text("Delete") }
+
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Button(
+                                    onClick = { onView(saved.id) }
+                                ) {
+                                    Text("View")
+                                }
+
+                                Button(
+                                    onClick = { onEdit(saved.id) }
+                                ) {
+                                    Text("Edit")
+                                }
+
+                                Button(
+                                    onClick = {
+                                        viewModel.deleteSavedRepair(saved.id)
+                                    }
+                                ) {
+                                    Text("Delete")
+                                }
                             }
                         }
                     }
@@ -56,7 +114,11 @@ fun SavedRepairsScreen(
         }
 
         Spacer(modifier = Modifier.height(12.dp))
-        Button(onClick = onAddRepair, modifier = Modifier.fillMaxWidth()) {
+
+        Button(
+            onClick = onAddRepair,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("+ Add Repair")
         }
     }
