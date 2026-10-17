@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "300157376430",
+    "project_id": "renchityourstartupau-2cfeef74",
+    "storage_bucket": "renchityourstartupau-2cfeef74.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300157376430:android:a4cf0ca2524285d9025a3f",
+        "android_client_info": {
+          "package_name": "com.example.renchityourstartupautoguide"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxIZ2d-1Rx6J0qB1VM1Oz0lr1sJ5-iJHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

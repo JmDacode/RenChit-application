@@ -1,3 +1,4 @@
+
 package com.example.renchityourstartupautoguide.screens
 
 import androidx.compose.foundation.clickable
@@ -11,6 +12,8 @@ import androidx.compose.ui.unit.dp
 import com.example.renchityourstartupautoguide.viewmodel.displayCategory
 import com.example.renchityourstartupautoguide.viewmodel.displayVehicleType
 import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
+import com.example.renchityourstartupautoguide.ui.theme.DeepCharcoal
+import com.example.renchityourstartupautoguide.ui.theme.SandGold
 
 @Composable
 fun RepairCategoriesScreen(
@@ -21,27 +24,51 @@ fun RepairCategoriesScreen(
 ) {
     val categories = viewModel.categoriesFor(vehicleType)
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        OutlinedButton(onClick = onBack) { Text("Back") }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        OutlinedButton(onClick = onBack) {
+            Text("Back")
+        }
+
         Spacer(modifier = Modifier.height(8.dp))
-        Text("Repair Categories", style = MaterialTheme.typography.headlineSmall)
-        Text("Vehicle: ${displayVehicleType(vehicleType)}", style = MaterialTheme.typography.bodySmall)
+
+        Text(
+            "Repair Categories",
+            style = MaterialTheme.typography.headlineSmall
+        )
+
+        Text(
+            "Vehicle: ${displayVehicleType(vehicleType)}",
+            style = MaterialTheme.typography.bodySmall
+        )
+
         Spacer(modifier = Modifier.height(12.dp))
 
         if (categories.isEmpty()) {
             Text("No repair categories available for this vehicle yet.")
         } else {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 items(categories) { category ->
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onSelectCategory(category) }
+                            .clickable {
+                                onSelectCategory(category)
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = DeepCharcoal
+                        )
                     ) {
                         Text(
-                            displayCategory(category),
+                            text = displayCategory(category),
                             modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium,
+                            color = SandGold
                         )
                     }
                 }
