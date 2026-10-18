@@ -64,6 +64,7 @@ fun RenChitApp() {
 
         composable("home") {
             HomeScreen(
+                onSelectVehicle = { type -> navController.navigate("repairCategories/$type") },
                 username = authViewModel.currentUser?.username ?: "",
                 onFindRepair = { navController.navigate("vehicleType") },
                 onViewSaved = { navController.navigate("savedRepairs") },
