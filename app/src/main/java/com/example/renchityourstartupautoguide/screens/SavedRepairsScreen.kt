@@ -20,8 +20,8 @@ import com.example.renchityourstartupautoguide.ui.theme.SandGold
 fun SavedRepairsScreen(
     viewModel: RenChitViewModel,
     onAddRepair: () -> Unit,
-    onView: (Int) -> Unit,
-    onEdit: (Int) -> Unit,
+    onView: (String) -> Unit,
+    onEdit: (String) -> Unit,
     onBack: () -> Unit
 ) {
     val savedRepairs by viewModel.savedRepairs.collectAsStateWithLifecycle()

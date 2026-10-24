@@ -140,7 +140,7 @@ fun RenChitApp() {
                 onAddRepair = { navController.navigate("addEditSavedRepair") },
                 onView = { savedId ->
                     val saved = viewModel.getSavedRepair(savedId)
-                    if (saved != null) {
+                    if (saved != null && viewModel.getGuide(saved.guideId) != null) {
                         navController.navigate("repairGuide/${saved.guideId}")
                     }
                 },
@@ -151,12 +151,15 @@ fun RenChitApp() {
 
         composable(
             route = "addEditSavedRepair?savedRepairId={savedRepairId}",
-            arguments = listOf(navArgument("savedRepairId") { type = NavType.IntType; defaultValue = -1 })
+            arguments = listOf(navArgument("savedRepairId") {
+                type = NavType.StringType
+                defaultValue = ""
+            })
         ) { backStackEntry ->
-            val rawId = backStackEntry.arguments?.getInt("savedRepairId") ?: -1
+            val rawId = backStackEntry.arguments?.getString("savedRepairId") ?: ""
             AddEditSavedRepairScreen(
                 viewModel = viewModel,
-                savedRepairId = if (rawId == -1) null else rawId,
+                savedRepairId = rawId.ifEmpty { null },
                 onDone = { navController.popBackStack() }
             )
         }

@@ -11,7 +11,7 @@ import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
 @Composable
 fun AddEditSavedRepairScreen(
     viewModel: RenChitViewModel,
-    savedRepairId: Int?,
+    savedRepairId: String?,
     onDone: () -> Unit
 ) {
     val savedRepairs by viewModel.savedRepairs.collectAsStateWithLifecycle()

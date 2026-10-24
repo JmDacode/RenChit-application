@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -51,7 +50,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -95,15 +93,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
             HeroCard(onExplore = onFindRepair)
-
-            Spacer(Modifier.height(24.dp))
-            Text(
-                text = "Build Your Automotive Knowledge",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = PrimaryText
-            )
-            Spacer(Modifier.height(12.dp))
 
             Row(
                 modifier = Modifier
@@ -243,17 +232,6 @@ private fun HeroCard(onExplore: () -> Unit) {
             .clip(RoundedCornerShape(24.dp))
             .background(DeepCharcoal)
     ) {
-        // Simplified car in the corner. Change width or offset to move it around.
-        Image(
-            painter = painterResource(R.drawable.ic_car_silhouette),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .offset(x = 40.dp, y = 8.dp)
-                .width(230.dp)
-                .alpha(0.6f)
-        )
-
         Column(modifier = Modifier.padding(24.dp)) {
             Text(
                 text = "YOUR AUTOMOTIVE STARTING POINT",

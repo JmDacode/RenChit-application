@@ -1,9 +1,11 @@
 package com.example.renchityourstartupautoguide.viewmodel
 
+import com.google.firebase.firestore.DocumentId
+
 data class User(
-    val id: Int,
-    val username: String,
-    val email: String,
-    val passwordHash: String,
-    val createdAt: Long
+    @DocumentId
+    val id: String = "",
+    val username: String = "",
+    val email: String = "",
+    val createdAt: Long = System.currentTimeMillis()
 )

@@ -49,12 +49,14 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                val result = authViewModel.login(username, password)
-                if (result == null) onLoggedIn() else error = result
+                authViewModel.login(username, password) { result ->
+                    if (result == null) onLoggedIn() else error = result
+                }
             },
+            enabled = !authViewModel.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Log In")
+            Text(if (authViewModel.isLoading) "Logging in..." else "Log In")
         }
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(onClick = onGoToRegister, modifier = Modifier.fillMaxWidth()) {

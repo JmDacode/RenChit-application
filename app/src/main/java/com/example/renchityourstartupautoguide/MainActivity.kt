@@ -1,4 +1,3 @@
-
 package com.example.renchityourstartupautoguide
 
 import android.os.Bundle

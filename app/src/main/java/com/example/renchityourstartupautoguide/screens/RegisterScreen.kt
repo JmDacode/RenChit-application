@@ -60,12 +60,14 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                val result = authViewModel.register(username, email, password, confirmPassword)
-                if (result == null) onRegistered() else error = result
+                authViewModel.register(username, email, password, confirmPassword) { result ->
+                    if (result == null) onRegistered() else error = result
+                }
             },
+            enabled = !authViewModel.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Register")
+            Text(if (authViewModel.isLoading) "Creating account..." else "Register")
         }
     }
 }

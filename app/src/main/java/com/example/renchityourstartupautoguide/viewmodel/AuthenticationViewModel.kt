@@ -1,60 +1,63 @@
 package com.example.renchityourstartupautoguide.viewmodel
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import java.security.MessageDigest
 
 class AuthViewModel : ViewModel() {
 
-    private val users = mutableStateListOf<User>()
-    private var nextUserId = 1
-
     var currentUser by mutableStateOf<User?>(null)
+        private set
+
+    var isLoading by mutableStateOf(false)
         private set
 
     fun register(
         username: String,
         email: String,
         password: String,
-        confirmPassword: String
-    ): String? {
+        confirmPassword: String,
+        onResult: (String?) -> Unit
+    ) {
         val name = username.trim()
         val mail = email.trim()
-        return when {
-            name.isBlank() || mail.isBlank() || password.isBlank() -> "Please fill in all fields."
-            !mail.contains("@") -> "Please enter a valid email address."
-            password.length < 6 -> "Password must be at least 6 characters."
-            password != confirmPassword -> "Passwords do not match."
-            users.any { it.username.equals(name, ignoreCase = true) } -> "That username is already taken."
-            users.any { it.email.equals(mail, ignoreCase = true) } -> "That email is already registered."
+
+        when {
+            name.isEmpty() || mail.isEmpty() ||
+                    password.isEmpty() || confirmPassword.isEmpty() ->
+                onResult("Please fill in all fields.")
+
+            !mail.endsWith("@gmail.com", ignoreCase = true) ->
+                onResult("Please use a valid Gmail address.")
+
+            password != confirmPassword ->
+                onResult("Passwords do not match.")
+
             else -> {
-                val user = User(nextUserId++, name, mail, hash(password), System.currentTimeMillis())
-                users.add(user)
-                currentUser = user
-                null
+                currentUser = User(username = name, email = mail)
+                onResult(null)
             }
         }
     }
 
-    fun login(username: String, password: String): String? {
-        val user = users.find { it.username.equals(username.trim(), ignoreCase = true) }
-        return if (user == null || user.passwordHash != hash(password)) {
-            "Incorrect username or password."
-        } else {
-            currentUser = user
-            null
+    fun login(
+        username: String,
+        password: String,
+        onResult: (String?) -> Unit
+    ) {
+        val name = username.trim()
+
+        if (name.isEmpty() || password.isEmpty()) {
+            onResult("Please enter a username and password.")
+            return
         }
+
+        currentUser = User(username = name)
+        onResult(null)
     }
 
     fun logout() {
         currentUser = null
     }
-
-    private fun hash(password: String): String =
-        MessageDigest.getInstance("SHA-256")
-            .digest(password.toByteArray())
-            .joinToString("") { "%02x".format(it) }
 }

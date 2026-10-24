@@ -1,21 +1,25 @@
 package com.example.renchityourstartupautoguide.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class RenChitViewModel(
     private val repository: SavedRepairRepository
 ) : ViewModel() {
 
-    val savedRepairs = repository.savedRepairs
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
+    private val _savedRepairs = MutableStateFlow<List<SavedRepair>>(emptyList())
+    val savedRepairs: StateFlow<List<SavedRepair>> = _savedRepairs.asStateFlow()
+
+    init {
+        repository.getSavedRepairs { list ->
+            _savedRepairs.value = list
+        }
+    }
 
     val repairGuides = listOf(
         RepairGuide(
@@ -93,7 +97,7 @@ class RenChitViewModel(
             it.vehicleType == vehicleType && it.category == category
         }
 
-    fun getSavedRepair(id: Int): SavedRepairEntity? =
+    fun getSavedRepair(id: String): SavedRepair? =
         savedRepairs.value.find { it.id == id }
 
     fun addSavedRepair(
@@ -104,46 +108,41 @@ class RenChitViewModel(
         userNote: String
     ) {
         viewModelScope.launch {
-            repository.addSavedRepair(
-                SavedRepairEntity(
-                    guideId = guideId,
-                    vehicleType = vehicleType,
-                    category = category,
-                    problemTask = problemTask,
-                    userNote = userNote
+            try {
+                repository.addSavedRepair(
+                    SavedRepair(
+                        guideId = guideId,
+                        vehicleType = vehicleType,
+                        category = category,
+                        problemTask = problemTask,
+                        userNote = userNote
+                    )
                 )
-            )
+            } catch (e: Exception) {
+                Log.e("RenChitViewModel", "Add failed", e)
+            }
         }
     }
 
     fun updateSavedRepair(
-        id: Int,
+        id: String,
         vehicleType: String,
         category: String,
         problemTask: String,
         userNote: String
     ) {
-        viewModelScope.launch {
-            val existing = repository.getSavedRepair(id)
-                ?: return@launch
-
-            repository.updateSavedRepair(
-                existing.copy(
-                    vehicleType = vehicleType,
-                    category = category,
-                    problemTask = problemTask,
-                    userNote = userNote
-                )
+        repository.updateSavedRepair(
+            id,
+            mapOf(
+                "vehicleType" to vehicleType,
+                "category" to category,
+                "problemTask" to problemTask,
+                "userNote" to userNote
             )
-        }
+        )
     }
 
-    fun deleteSavedRepair(id: Int) {
-        viewModelScope.launch {
-            val existing = repository.getSavedRepair(id)
-                ?: return@launch
-
-            repository.deleteSavedRepair(existing)
-        }
+    fun deleteSavedRepair(id: String) {
+        repository.deleteSavedRepair(id)
     }
 }
