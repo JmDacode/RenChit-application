@@ -1,73 +1,121 @@
 package com.example.renchityourstartupautoguide.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
 
 @Composable
 fun RegisterScreen(
-    authViewModel: AuthViewModel,
-    onRegistered: () -> Unit,
-    onBack: () -> Unit
+    navController: NavController,
+    viewModel: AuthViewModel
 ) {
-    var username by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf<String?>(null) }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        OutlinedButton(onClick = onBack) { Text("Back") }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Create Account", style = MaterialTheme.typography.headlineSmall)
-        Spacer(modifier = Modifier.height(16.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Create Your RenChit Account",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
-            value = username, onValueChange = { username = it },
-            label = { Text("Username") }, singleLine = true,
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         OutlinedTextField(
-            value = email, onValueChange = { email = it },
-            label = { Text("Email") }, singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = password, onValueChange = { password = it },
-            label = { Text("Password") }, singleLine = true,
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         OutlinedTextField(
-            value = confirmPassword, onValueChange = { confirmPassword = it },
-            label = { Text("Confirm Password") }, singleLine = true,
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = { Text("Confirm Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
 
-        error?.let {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
-        }
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                authViewModel.register(username, email, password, confirmPassword) { result ->
-                    if (result == null) onRegistered() else error = result
+                when {
+                    email.isBlank() ||
+                            password.isBlank() ||
+                            confirmPassword.isBlank() -> {
+                        Toast.makeText(
+                            context,
+                            "Please complete all fields",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    password != confirmPassword -> {
+                        Toast.makeText(
+                            context,
+                            "Passwords do not match",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    else -> {
+                        viewModel.registration(email.trim(), password) { success, result ->
+                            Toast.makeText(
+                                context,
+                                result,
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            if (success) {
+                                navController.navigate("home") {
+                                    popUpTo("register") {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             },
-            enabled = !authViewModel.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (authViewModel.isLoading) "Creating account..." else "Register")
+            Text("Register")
+        }
+
+        TextButton(
+            onClick = {
+                navController.navigate("login")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Already have an account? Login")
         }
     }
 }

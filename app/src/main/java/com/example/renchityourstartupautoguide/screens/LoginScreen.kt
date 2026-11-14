@@ -1,22 +1,25 @@
 package com.example.renchityourstartupautoguide.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
-    authViewModel: AuthViewModel,
-    onLoggedIn: () -> Unit,
-    onGoToRegister: () -> Unit
+    navController: NavController,
+    viewModel: AuthViewModel
 ) {
-    var username by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -24,43 +27,70 @@ fun LoginScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text("RenChit", style = MaterialTheme.typography.headlineLarge)
-        Text("Log in to continue", style = MaterialTheme.typography.bodyMedium)
-        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "RenChit Login",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
-            value = username, onValueChange = { username = it },
-            label = { Text("Username") }, singleLine = true,
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         OutlinedTextField(
-            value = password, onValueChange = { password = it },
-            label = { Text("Password") }, singleLine = true,
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
 
-        error?.let {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
-        }
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                authViewModel.login(username, password) { result ->
-                    if (result == null) onLoggedIn() else error = result
+                if (email.isBlank() || password.isBlank()) {
+                    Toast.makeText(
+                        context,
+                        "Please complete all fields",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    viewModel.login(email.trim(), password) { success, result ->
+                        if (success) {
+                            navController.navigate("home") {
+                                popUpTo("login") {
+                                    inclusive = true
+                                }
+                            }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                result,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
             },
-            enabled = !authViewModel.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (authViewModel.isLoading) "Logging in..." else "Log In")
+            Text("Login")
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = onGoToRegister, modifier = Modifier.fillMaxWidth()) {
-            Text("No account yet? Register")
+
+        TextButton(
+            onClick = {
+                navController.navigate("register")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Create an account")
         }
     }
 }

@@ -8,8 +8,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.renchityourstartupautoguide.viewmodel.displayCategory
-import com.example.renchityourstartupautoguide.viewmodel.displayVehicleType
+import com.example.renchityourstartupautoguide.model.displayCategory
+import com.example.renchityourstartupautoguide.model.displayVehicleType
 import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
 
 @Composable

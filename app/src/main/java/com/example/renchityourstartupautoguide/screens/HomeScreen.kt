@@ -94,6 +94,8 @@ fun HomeScreen(
             Spacer(Modifier.height(16.dp))
             HeroCard(onExplore = onFindRepair)
 
+            Spacer(modifier = Modifier.height(20.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

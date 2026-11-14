@@ -1,14 +1,14 @@
 package com.example.renchityourstartupautoguide.nav
 
-import androidx.compose.ui.platform.LocalContext
-import com.example.renchityourstartupautoguide.viewmodel.RenChitFactory
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.renchityourstartupautoguide.repository.AuthRepository
 import com.example.renchityourstartupautoguide.screens.AddEditSavedRepairScreen
 import com.example.renchityourstartupautoguide.screens.HomeScreen
 import com.example.renchityourstartupautoguide.screens.LoginScreen
@@ -17,55 +17,45 @@ import com.example.renchityourstartupautoguide.screens.RegisterScreen
 import com.example.renchityourstartupautoguide.screens.RepairCategoriesScreen
 import com.example.renchityourstartupautoguide.screens.RepairGuideScreen
 import com.example.renchityourstartupautoguide.screens.SavedRepairsScreen
+import com.example.renchityourstartupautoguide.screens.SplashScreen
 import com.example.renchityourstartupautoguide.screens.VehicleTypeScreen
 import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
+import com.example.renchityourstartupautoguide.model.RenChitApplication
+import com.example.renchityourstartupautoguide.model.RenChitFactory
 import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
-import com.example.renchityourstartupautoguide.viewmodel.RenChitApplication
 
 @Composable
 fun RenChitApp() {
     val navController = rememberNavController()
 
     val context = LocalContext.current.applicationContext
-
     val application = context as RenChitApplication
     val repository = application.repository
+    val authRepo = AuthRepository()
 
-    val viewModel: RenChitViewModel =
-        viewModel(factory = RenChitFactory(repository))
+    val factory = RenChitFactory(repository, authRepo)
 
-    val authViewModel: AuthViewModel = viewModel()
+    val viewModel: RenChitViewModel = viewModel(factory = factory)
+    val authViewModel: AuthViewModel = viewModel(factory = factory)
 
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "splash") {
+
+        composable("splash") {
+            SplashScreen(navController, authViewModel)
+        }
 
         composable("login") {
-            LoginScreen(
-                authViewModel = authViewModel,
-                onLoggedIn = {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                },
-                onGoToRegister = { navController.navigate("register") }
-            )
+            LoginScreen(navController, authViewModel)
         }
 
         composable("register") {
-            RegisterScreen(
-                authViewModel = authViewModel,
-                onRegistered = {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                },
-                onBack = { navController.popBackStack() }
-            )
+            RegisterScreen(navController, authViewModel)
         }
 
         composable("home") {
             HomeScreen(
                 onSelectVehicle = { type -> navController.navigate("repairCategories/$type") },
-                username = authViewModel.currentUser?.username ?: "",
+                username = authViewModel.getLoginUser() ?: "",
                 onFindRepair = { navController.navigate("vehicleType") },
                 onViewSaved = { navController.navigate("savedRepairs") },
                 onLogout = {

@@ -1,4 +1,4 @@
-package com.example.renchityourstartupautoguide.viewmodel
+package com.example.renchityourstartupautoguide.model
 
 import com.google.firebase.firestore.DocumentId
 

@@ -1,4 +1,4 @@
-package com.example.renchityourstartupautoguide.viewmodel
+package com.example.renchityourstartupautoguide.model
 
 fun displayVehicleType(value: String): String = when (value) {
     "PickupTruck" -> "Pickup Truck"

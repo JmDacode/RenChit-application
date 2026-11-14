@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
-import com.example.renchityourstartupautoguide.viewmodel.displayCategory
-import com.example.renchityourstartupautoguide.viewmodel.displayVehicleType
+import com.example.renchityourstartupautoguide.model.displayCategory
+import com.example.renchityourstartupautoguide.model.displayVehicleType
 import com.example.renchityourstartupautoguide.ui.theme.DeepCharcoal
 import com.example.renchityourstartupautoguide.ui.theme.SandGold
 

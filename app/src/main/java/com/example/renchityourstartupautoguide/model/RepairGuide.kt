@@ -1,4 +1,4 @@
-package com.example.renchityourstartupautoguide.viewmodel
+package com.example.renchityourstartupautoguide.model
 
 data class RepairGuide(
     val id: Int,
