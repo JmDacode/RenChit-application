@@ -10,6 +10,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
+import androidx.compose.foundation.background
+import com.example.renchityourstartupautoguide.ui.theme.LightText
+import com.example.renchityourstartupautoguide.ui.theme.OxideBronze
+import com.example.renchityourstartupautoguide.ui.theme.PrimaryText
+import com.example.renchityourstartupautoguide.ui.theme.WarmIvory
+import com.example.renchityourstartupautoguide.ui.theme.renChitFieldColors
 
 @Composable
 fun RegisterScreen(
@@ -25,12 +31,14 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(WarmIvory)
             .padding(24.dp),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Create Your RenChit Account",
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            color = PrimaryText
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -39,6 +47,7 @@ fun RegisterScreen(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
+            colors = renChitFieldColors(),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -49,6 +58,7 @@ fun RegisterScreen(
             onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
+            colors = renChitFieldColors(),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -59,6 +69,7 @@ fun RegisterScreen(
             onValueChange = { confirmPassword = it },
             label = { Text("Confirm Password") },
             visualTransformation = PasswordVisualTransformation(),
+            colors = renChitFieldColors(),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -104,6 +115,10 @@ fun RegisterScreen(
                     }
                 }
             },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = OxideBronze,
+                contentColor = LightText
+            ),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Register")
@@ -113,6 +128,7 @@ fun RegisterScreen(
             onClick = {
                 navController.navigate("login")
             },
+            colors = ButtonDefaults.textButtonColors(contentColor = OxideBronze),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Already have an account? Login")

@@ -3,8 +3,46 @@
     android:height="50dp"
     android:viewportWidth="240"
     android:viewportHeight="100">
+
+    <!-- Pickup body: cargo bed LEFT, hood RIGHT -->
     <path
         android:fillColor="#292824"
+        android:pathData="M12,72 L14,42 L104,42 L123,22 Q128,16 141,16 L165,16 Q183,16 196,31 L214,46 L230,49 L235,55 Q238,60 238,68 L238,76 L12,76 Z" />
+
+    <!-- Cabin windows -->
+    <path
+        android:fillColor="#D9E0DF"
+        android:pathData="M130,42 L141,22 L163,22 L163,42 Z M170,22 L165,22 Q187,22 198,35 L205,42 L170,42 Z" />
+
+    <!-- Cabin pillars and body details -->
+    <path
+        android:fillColor="#A8A39A"
+        android:pathData="M166,18 L170,18 L170,69 L166,69 Z M115,43 L119,43 L119,68 L115,68 Z M215,47 L219,47 L219,67 L215,67 Z" />
+
+    <!-- Open cargo bed -->
+    <path
+        android:fillColor="#A8A39A"
+        android:pathData="M16,42 L104,42 L104,45 L16,45 Z M16,49 L100,49 L100,52 L16,52 Z M16,57 L100,57 L100,59 L16,59 Z" />
+
+    <!-- Door handle -->
+    <path
+        android:fillColor="#C6C0B4"
+        android:pathData="M138,49 L151,49 L151,52 L138,52 Z" />
+
+    <!-- Headlights and rear lights -->
+    <path
+        android:fillColor="#D8B77B"
+        android:pathData="M14,55 L25,55 L26,61 L14,63 Z M228,56 L236,59 L236,64 L228,63 Z" />
+
+    <!-- Wheels -->
+    <path
+        android:fillColor="#22211F"
         android:fillType="evenOdd"
-        android:pathData="M10,72 L10,44 L100,44 L108,26 Q111,22 118,22 L150,22 Q156,22 160,27 L176,44 L214,48 Q232,50 232,60 L232,72 L200,72 A20,20 0 0 0 160,72 L76,72 A20,20 0 0 0 36,72 Z M117,30 L130,30 L130,43 L109,43 Z M136,30 L151,30 Q155,30 158,34 L168,43 L136,43 Z M180,59 A15,15 0 1 1 180,89 A15,15 0 1 1 180,59 Z M180,68 A6,6 0 1 1 180,80 A6,6 0 1 1 180,68 Z M56,59 A15,15 0 1 1 56,89 A15,15 0 1 1 56,59 Z M56,68 A6,6 0 1 1 56,80 A6,6 0 1 1 56,68 Z" />
+        android:pathData="M65,57 A20,20 0 1,0 65,97 A20,20 0 1,0 65,57 Z M65,67 A10,10 0 1,1 65,87 A10,10 0 1,1 65,67 Z M196,57 A20,20 0 1,0 196,97 A20,20 0 1,0 196,57 Z M196,67 A10,10 0 1,1 196,87 A10,10 0 1,1 196,67 Z" />
+
+    <!-- Wheel hubs -->
+    <path
+        android:fillColor="#B7B3AA"
+        android:pathData="M65,70 A7,7 0 1,0 65,84 A7,7 0 1,0 65,70 Z M196,70 A7,7 0 1,0 196,84 A7,7 0 1,0 196,70 Z" />
+
 </vector>

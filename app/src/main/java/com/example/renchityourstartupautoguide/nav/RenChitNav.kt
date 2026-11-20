@@ -19,10 +19,22 @@ import com.example.renchityourstartupautoguide.screens.RepairGuideScreen
 import com.example.renchityourstartupautoguide.screens.SavedRepairsScreen
 import com.example.renchityourstartupautoguide.screens.SplashScreen
 import com.example.renchityourstartupautoguide.screens.VehicleTypeScreen
+import com.example.renchityourstartupautoguide.screens.WarningSignsScreen
+import com.example.renchityourstartupautoguide.screens.WarningListScreen
+import com.example.renchityourstartupautoguide.screens.WarningDetailScreen
 import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
 import com.example.renchityourstartupautoguide.model.RenChitApplication
 import com.example.renchityourstartupautoguide.model.RenChitFactory
 import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
+import com.example.renchityourstartupautoguide.viewmodel.ChecklistViewModel
+import com.example.renchityourstartupautoguide.screens.ChecklistHubScreen
+import com.example.renchityourstartupautoguide.screens.ChecklistScreen
+import com.example.renchityourstartupautoguide.screens.ChecklistItemScreen
+import com.example.renchityourstartupautoguide.screens.LearnHubScreen
+import com.example.renchityourstartupautoguide.screens.LearnSystemScreen
+import com.example.renchityourstartupautoguide.screens.LearnPartScreen
+import com.example.renchityourstartupautoguide.screens.PartSearchScreen
+
 
 @Composable
 fun RenChitApp() {
@@ -37,6 +49,7 @@ fun RenChitApp() {
 
     val viewModel: RenChitViewModel = viewModel(factory = factory)
     val authViewModel: AuthViewModel = viewModel(factory = factory)
+    val checklistViewModel: ChecklistViewModel = viewModel(factory = factory)
 
     NavHost(navController = navController, startDestination = "splash") {
 
@@ -58,11 +71,126 @@ fun RenChitApp() {
                 username = authViewModel.getLoginUser() ?: "",
                 onFindRepair = { navController.navigate("vehicleType") },
                 onViewSaved = { navController.navigate("savedRepairs") },
+                onWarningSigns = { navController.navigate("warningSigns") },
+                onChecklist = { navController.navigate("checklist") },
+                onLearn = { navController.navigate("learnHub") },
+                onSearchParts = { navController.navigate("partSearch") },
                 onLogout = {
                     authViewModel.logout()
+                    checklistViewModel.clear()
                     navController.navigate("login") {
                         popUpTo("home") { inclusive = true }
                     }
+                }
+            )
+        }
+        composable("checklist") {
+            ChecklistHubScreen(
+                viewModel = checklistViewModel,
+                onSelectCategory = { categoryId: String ->
+                    navController.navigate("checklistList/$categoryId")
+                },
+                onBack = {
+                    checklistViewModel.clear()
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(
+            route = "checklistList/{categoryId}",
+            arguments = listOf(
+                navArgument("categoryId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+
+            val categoryId =
+                backStackEntry.arguments?.getString("categoryId") ?: ""
+
+            ChecklistScreen(
+                categoryId = categoryId,
+                viewModel = checklistViewModel,
+                onSelectItem = { itemId ->
+                    navController.navigate("checklistDetail/$itemId")
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        // Checklist Item Details
+        composable(
+            route = "checklistDetail/{itemId}",
+            arguments = listOf(
+                navArgument("itemId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+
+            val itemId =
+                backStackEntry.arguments?.getString("itemId") ?: ""
+
+            ChecklistItemScreen(
+                itemId = itemId,
+                viewModel = checklistViewModel,
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        // Warning Signs Landing Screen
+        composable("warningSigns") {
+            WarningSignsScreen(
+                onSelectCategory = { categoryId ->
+                    navController.navigate("warningList/$categoryId")
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Warning Signs Category List Screen
+        composable(
+            route = "warningList/{categoryId}",
+            arguments = listOf(
+                navArgument("categoryId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val categoryId =
+                backStackEntry.arguments?.getString("categoryId") ?: ""
+
+            WarningListScreen(
+                categoryId = categoryId,
+                onSelectItem = { itemId ->
+                    navController.navigate("warningDetail/$itemId")
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Warning Signs Detail Screen
+        composable(
+            route = "warningDetail/{itemId}",
+            arguments = listOf(
+                navArgument("itemId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val itemId =
+                backStackEntry.arguments?.getString("itemId") ?: ""
+
+            WarningDetailScreen(
+                itemId = itemId,
+                onBack = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -151,6 +279,54 @@ fun RenChitApp() {
                 viewModel = viewModel,
                 savedRepairId = rawId.ifEmpty { null },
                 onDone = { navController.popBackStack() }
+            )
+        }
+        // ---------- Part Search ----------
+        composable("partSearch") {
+            PartSearchScreen(
+                onSelectPart = { partId ->
+                    navController.navigate("learnPart/$partId")
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        // ---------- Learn Your Car ----------
+        composable("learnHub") {
+            LearnHubScreen(
+                onSelectSystem = { systemId ->
+                    navController.navigate("learnSystem/$systemId")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = "learnSystem/{systemId}",
+            arguments = listOf(navArgument("systemId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val systemId = backStackEntry.arguments?.getString("systemId") ?: ""
+            LearnSystemScreen(
+                systemId = systemId,
+                onSelectPart = { partId ->
+                    navController.navigate("learnPart/$partId")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = "learnPart/{partId}",
+            arguments = listOf(navArgument("partId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val partId = backStackEntry.arguments?.getString("partId") ?: ""
+            LearnPartScreen(
+                partId = partId,
+                onSelectPart = { relatedId ->
+                    navController.navigate("learnPart/$relatedId")
+                },
+                onBack = { navController.popBackStack() }
             )
         }
     }

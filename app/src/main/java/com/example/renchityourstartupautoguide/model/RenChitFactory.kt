@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.renchityourstartupautoguide.repository.AuthRepository
 import com.example.renchityourstartupautoguide.repository.SavedRepairRepository
 import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
+import com.example.renchityourstartupautoguide.viewmodel.ChecklistViewModel
 import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
 
 class RenChitFactory(
@@ -19,11 +20,19 @@ class RenChitFactory(
             @Suppress("UNCHECKED_CAST")
             return RenChitViewModel(repository) as T
         }
+
         if (modelClass.isAssignableFrom(AuthViewModel::class.java))
         {
             @Suppress("UNCHECKED_CAST")
             return AuthViewModel(authrepository) as T
         }
+
+        if (modelClass.isAssignableFrom(ChecklistViewModel::class.java))
+        {
+            @Suppress("UNCHECKED_CAST")
+            return ChecklistViewModel() as T
+        }
+
         throw IllegalArgumentException("Unknown ViewModel")
     }
 }

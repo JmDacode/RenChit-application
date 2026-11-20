@@ -68,6 +68,8 @@ import com.example.renchityourstartupautoguide.ui.theme.SandGold
 import com.example.renchityourstartupautoguide.ui.theme.SecondaryText
 import com.example.renchityourstartupautoguide.ui.theme.WarmIvory
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 
 @Composable
 fun HomeScreen(
@@ -75,11 +77,15 @@ fun HomeScreen(
     onFindRepair: () -> Unit,
     onViewSaved: () -> Unit,
     onSelectVehicle: (String) -> Unit,
+    onChecklist: () -> Unit,
+    onWarningSigns: () -> Unit,
+    onLearn: () -> Unit,
+    onSearchParts: () -> Unit,
     onLogout: () -> Unit
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = { HomeBottomBar(onFindRepair = onFindRepair, onViewSaved = onViewSaved) }
+        bottomBar = { HomeBottomBar(onViewSaved = onViewSaved, onSearchParts = onSearchParts) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -107,8 +113,8 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f).fillMaxHeight(),
                     icon = Icons.AutoMirrored.Outlined.MenuBook,
                     title = "Learn Your Car",
-                    description = "Beginner lessons about engines, brakes, batteries, and cooling systems.",
-                    onClick = onFindRepair
+                    description = "Learn key vehicle components, their functions, and how they work together.",
+                    onClick = onLearn
                 )
                 // Placeholder, no function yet
                 HomeCard(
@@ -116,7 +122,7 @@ fun HomeScreen(
                     icon = Icons.Outlined.Warning,
                     title = "Warning Signs Explained",
                     description = "Understand dashboard lights, unusual sounds, and symptoms that need attention.",
-                    onClick = {}
+                    onClick = onWarningSigns
                 )
             }
 
@@ -142,7 +148,7 @@ fun HomeScreen(
                     icon = Icons.Outlined.Checklist,
                     title = "Beginner's Checklist",
                     description = "Quick checks before driving or during routine vehicle care.",
-                    onClick = {}
+                    onClick = onChecklist
                 )
             }
             Spacer(Modifier.height(24.dp))
@@ -318,45 +324,45 @@ private fun HomeCard(
 
 @Composable
 private fun HomeBottomBar(
-    onFindRepair: () -> Unit,
-    onViewSaved: () -> Unit
+    onViewSaved: () -> Unit,
+    onSearchParts: () -> Unit
 ) {
     val itemColors = NavigationBarItemDefaults.colors(
-        selectedIconColor = LightText,
-        selectedTextColor = PrimaryText,
-        indicatorColor = OxideBronze,
-        unselectedIconColor = SecondaryText,
-        unselectedTextColor = SecondaryText
+        selectedIconColor = SandGold,
+        selectedTextColor = WarmIvory,
+        indicatorColor = Color.Transparent,
+        unselectedIconColor = WarmIvory.copy(alpha = 0.65f),
+        unselectedTextColor = WarmIvory.copy(alpha = 0.65f)
     )
 
-    NavigationBar(containerColor = CardWhite) {
+    NavigationBar(containerColor = DeepCharcoal) {
         NavigationBarItem(
             selected = true,
-            onClick = onFindRepair,
-            icon = { Icon(Icons.Outlined.Search, contentDescription = null) },
-            label = { NavLabel("Find Repair Guide") },
+            onClick = onSearchParts,
+            icon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = SandGold) },
+            label = { NavLabel("Search") },
             colors = itemColors
         )
         NavigationBarItem(
-            selected = false,
+            selected = true,
             onClick = onViewSaved,
-            icon = { Icon(Icons.Outlined.BookmarkBorder, contentDescription = null) },
+            icon = { Icon(Icons.Outlined.BookmarkBorder, contentDescription = null, tint = WarmIvory) },
             label = { NavLabel("My Saved Repair") },
             colors = itemColors
         )
         // Placeholder, no function yet
         NavigationBarItem(
-            selected = false,
+            selected = true,
             onClick = {},
-            icon = { Icon(painterResource(R.drawable.ic_engine), contentDescription = null) },
+            icon = { Icon(painterResource(R.drawable.ic_engine), contentDescription = null, tint = WarmIvory) },
             label = { NavLabel("Advanced Diagnostic") },
             colors = itemColors
         )
         // Placeholder, no function yet
         NavigationBarItem(
-            selected = false,
+            selected = true,
             onClick = {},
-            icon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
+            icon = { Icon(Icons.Outlined.Settings, contentDescription = null, tint = WarmIvory) },
             label = { NavLabel("Settings") },
             colors = itemColors
         )
@@ -463,20 +469,23 @@ private fun VehicleCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .height(56.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .width(76.dp)
-                        .height(40.dp)
+                        .width(92.dp)
+                        .height(44.dp)
                         .clip(RoundedCornerShape(50))
                         .background(DividerTaupe)
                 )
                 Image(
                     painter = painterResource(imageRes),
                     contentDescription = label,
-                    modifier = Modifier.width(80.dp)
+                    modifier = Modifier
+                        .fillMaxWidth(0.88f)
+                        .height(30.dp),
+                    contentScale = ContentScale.Fit
                 )
             }
             Spacer(Modifier.height(8.dp))

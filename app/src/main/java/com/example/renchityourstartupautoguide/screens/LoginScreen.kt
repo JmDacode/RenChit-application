@@ -10,6 +10,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
+import androidx.compose.foundation.background
+import com.example.renchityourstartupautoguide.ui.theme.LightText
+import com.example.renchityourstartupautoguide.ui.theme.OxideBronze
+import com.example.renchityourstartupautoguide.ui.theme.PrimaryText
+import com.example.renchityourstartupautoguide.ui.theme.WarmIvory
+import com.example.renchityourstartupautoguide.ui.theme.renChitFieldColors
 
 @Composable
 fun LoginScreen(
@@ -24,12 +30,14 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(WarmIvory)
             .padding(24.dp),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "RenChit Login",
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            color = PrimaryText
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -38,6 +46,7 @@ fun LoginScreen(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
+            colors = renChitFieldColors(),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -48,6 +57,7 @@ fun LoginScreen(
             onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
+            colors = renChitFieldColors(),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -79,6 +89,10 @@ fun LoginScreen(
                     }
                 }
             },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = OxideBronze,
+                contentColor = LightText
+            ),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")
@@ -88,6 +102,7 @@ fun LoginScreen(
             onClick = {
                 navController.navigate("register")
             },
+            colors = ButtonDefaults.textButtonColors(contentColor = OxideBronze),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Create an account")

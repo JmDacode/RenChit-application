@@ -1,11 +1,8 @@
 package com.example.renchityourstartupautoguide.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
     primary = OxideBronze,
@@ -26,45 +23,27 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = DividerTaupe,
     onSurfaceVariant = DeepCharcoal,
 
-    outline = StoneTaupe
-)
-
-private val DarkColorScheme = darkColorScheme(
-    primary = SandGold,
-    onPrimary = DeepCharcoal,
-
-    secondary = TrailSage,
-    onSecondary = LightText,
-
-    tertiary = OxideBronze,
-    onTertiary = LightText,
-
-    background = DeepCharcoal,
-    onBackground = WarmIvory,
-
-    surface = Color(0xFF36342F),
-    onSurface = WarmIvory,
-
-    surfaceVariant = Color(0xFF454139),
-    onSurfaceVariant = WarmIvory,
+    // These stop Material from filling the gaps with its default purple-gray
+    // tints (dropdown menus, dialogs, the bottom bar's selected pill)
+    surfaceContainer = CardWhite,
+    surfaceContainerHigh = CardWhite,
+    surfaceContainerLow = WarmIvory,
+    secondaryContainer = DividerTaupe,
+    onSecondaryContainer = DeepCharcoal,
+    primaryContainer = DividerTaupe,
+    onPrimaryContainer = DeepCharcoal,
+    error = androidx.compose.ui.graphics.Color(0xFFA8483C),
+    onError = LightText,
 
     outline = StoneTaupe
 )
 
 @Composable
 fun RenChitYourStartUpAutoGuideTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor -> LightColorScheme
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = LightColorScheme,
         typography = Typography,
         content = content
     )
