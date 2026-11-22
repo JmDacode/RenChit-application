@@ -1,5 +1,6 @@
 package com.example.renchityourstartupautoguide.nav
 
+import com.example.renchityourstartupautoguide.screens.SettingsScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,6 +35,14 @@ import com.example.renchityourstartupautoguide.screens.LearnHubScreen
 import com.example.renchityourstartupautoguide.screens.LearnSystemScreen
 import com.example.renchityourstartupautoguide.screens.LearnPartScreen
 import com.example.renchityourstartupautoguide.screens.PartSearchScreen
+import com.example.renchityourstartupautoguide.screens.MaintenanceHubScreen
+import com.example.renchityourstartupautoguide.screens.MaintenanceTopicScreen
+import com.example.renchityourstartupautoguide.screens.MaintenanceGuideScreen
+import com.example.renchityourstartupautoguide.screens.PrivacyPolicyScreen
+import com.example.renchityourstartupautoguide.screens.TermsAndConditionsScreen
+import com.example.renchityourstartupautoguide.screens.VehicleExplorerScreen
+import com.example.renchityourstartupautoguide.screens.VehicleDetailScreen
+
 
 
 @Composable
@@ -74,7 +83,12 @@ fun RenChitApp() {
                 onWarningSigns = { navController.navigate("warningSigns") },
                 onChecklist = { navController.navigate("checklist") },
                 onLearn = { navController.navigate("learnHub") },
+                onMaintenance = { navController.navigate("maintenanceHub") },
+                onExploreGuide = { navController.navigate("vehicleExplorer") },
                 onSearchParts = { navController.navigate("partSearch") },
+                onSettingsClick = {
+                    navController.navigate("settings")
+                },
                 onLogout = {
                     authViewModel.logout()
                     checklistViewModel.clear()
@@ -292,6 +306,7 @@ fun RenChitApp() {
                 }
             )
         }
+
         // ---------- Learn Your Car ----------
         composable("learnHub") {
             LearnHubScreen(
@@ -329,5 +344,97 @@ fun RenChitApp() {
                 onBack = { navController.popBackStack() }
             )
         }
+        composable("maintenanceHub") {
+            MaintenanceHubScreen(
+                onSelectTopic = { topicId ->
+                    navController.navigate("maintenanceTopic/$topicId")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("maintenanceTopic/{topicId}") { backStackEntry ->
+            val topicId = backStackEntry.arguments?.getString("topicId") ?: ""
+            MaintenanceTopicScreen(
+                topicId = topicId,
+                onSelectGuide = { guideId ->
+                    navController.navigate("maintenanceGuide/$guideId")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("maintenanceGuide/{guideId}") { backStackEntry ->
+            val guideId = backStackEntry.arguments?.getString("guideId") ?: ""
+            MaintenanceGuideScreen(
+                guideId = guideId,
+                onSelectPart = { partId ->
+                    navController.navigate("learnPart/$partId")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+        // ---------- Vehicle Explorer ----------
+        composable("vehicleExplorer") {
+            VehicleExplorerScreen(
+                onSelectType = { typeId ->
+                    navController.navigate("vehicleDetail/$typeId")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+// ---------- Vehicle Detail ----------
+        composable("vehicleDetail/{typeId}") { backStackEntry ->
+            val typeId = backStackEntry.arguments?.getString("typeId") ?: ""
+
+            VehicleDetailScreen(
+                typeId = typeId,
+                onBack = { navController.popBackStack() }
+            )
+        }
+        // ---------- Settings ----------
+        composable("settings") {
+            SettingsScreen(
+                onBack = {
+                    navController.popBackStack()
+                },
+                onPrivacyClick = {
+                    navController.navigate("privacy_policy")
+                },
+                onTermsClick = {
+                    navController.navigate("terms_conditions")
+                },
+                onLogout = {
+                    authViewModel.logout()
+                    checklistViewModel.clear()
+
+                    navController.navigate("login") {
+                        popUpTo("home") {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+        // ---------- Privacy Policy ----------
+        composable("privacy_policy") {
+            PrivacyPolicyScreen(
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // ---------- Terms and Conditions ----------
+        composable("terms_conditions") {
+            TermsAndConditionsScreen(
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
+

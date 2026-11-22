@@ -80,12 +80,21 @@ fun HomeScreen(
     onChecklist: () -> Unit,
     onWarningSigns: () -> Unit,
     onLearn: () -> Unit,
+    onMaintenance: () -> Unit,
     onSearchParts: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onExploreGuide: () -> Unit,
     onLogout: () -> Unit
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = { HomeBottomBar(onViewSaved = onViewSaved, onSearchParts = onSearchParts) }
+        bottomBar = {
+            HomeBottomBar(
+                onViewSaved = onViewSaved,
+                onSearchParts = onSearchParts,
+                onSettingsClick = onSettingsClick
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -98,7 +107,7 @@ fun HomeScreen(
             HomeHeader(username = username, onLogout = onLogout)
 
             Spacer(Modifier.height(16.dp))
-            HeroCard(onExplore = onFindRepair)
+            HeroCard(onExplore = onExploreGuide)
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -140,7 +149,7 @@ fun HomeScreen(
                     icon = Icons.Outlined.Build,
                     title = "Essential Maintenance",
                     description = "Learn oil checks, tire pressure, coolant monitoring, and basic maintenance.",
-                    onClick = {}
+                    onClick = onMaintenance
                 )
                 // Placeholder, no function yet
                 HomeCard(
@@ -232,6 +241,7 @@ private fun HomeHeader(username: String, onLogout: () -> Unit) {
     }
 }
 
+
 @Composable
 private fun HeroCard(onExplore: () -> Unit) {
     Box(
@@ -248,7 +258,9 @@ private fun HeroCard(onExplore: () -> Unit) {
                 letterSpacing = 0.8.sp,
                 color = SandGold
             )
+
             Spacer(Modifier.height(10.dp))
+
             Text(
                 text = "Know your car.",
                 fontSize = 32.sp,
@@ -256,7 +268,9 @@ private fun HeroCard(onExplore: () -> Unit) {
                 fontWeight = FontWeight.Bold,
                 color = WarmIvory
             )
+
             Spacer(Modifier.height(10.dp))
+
             Text(
                 text = "Learn the basics, understand common problems, and build confidence one guide at a time.",
                 fontSize = 15.sp,
@@ -264,7 +278,9 @@ private fun HeroCard(onExplore: () -> Unit) {
                 color = WarmIvory.copy(alpha = 0.85f),
                 modifier = Modifier.fillMaxWidth(0.8f)
             )
+
             Spacer(Modifier.height(20.dp))
+
             Button(
                 onClick = onExplore,
                 shape = RoundedCornerShape(12.dp),
@@ -273,12 +289,16 @@ private fun HeroCard(onExplore: () -> Unit) {
                     contentColor = LightText
                 )
             ) {
-                Text("Explore guides", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                Spacer(Modifier.width(10.dp))
+                Text(
+                    text = "Explore guides",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }
 }
+
 
 @Composable
 private fun HomeCard(
@@ -325,7 +345,8 @@ private fun HomeCard(
 @Composable
 private fun HomeBottomBar(
     onViewSaved: () -> Unit,
-    onSearchParts: () -> Unit
+    onSearchParts: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val itemColors = NavigationBarItemDefaults.colors(
         selectedIconColor = SandGold,
@@ -350,18 +371,9 @@ private fun HomeBottomBar(
             label = { NavLabel("My Saved Repair") },
             colors = itemColors
         )
-        // Placeholder, no function yet
         NavigationBarItem(
             selected = true,
-            onClick = {},
-            icon = { Icon(painterResource(R.drawable.ic_engine), contentDescription = null, tint = WarmIvory) },
-            label = { NavLabel("Advanced Diagnostic") },
-            colors = itemColors
-        )
-        // Placeholder, no function yet
-        NavigationBarItem(
-            selected = true,
-            onClick = {},
+            onClick = onSettingsClick,
             icon = { Icon(Icons.Outlined.Settings, contentDescription = null, tint = WarmIvory) },
             label = { NavLabel("Settings") },
             colors = itemColors
