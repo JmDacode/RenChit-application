@@ -66,7 +66,7 @@ fun SettingsScreen(
             )
 
             Text(
-                text = "User account.",
+                text = "User account",
                 fontSize = 16.sp,
                 color = SettingsMuted
             )
@@ -102,7 +102,7 @@ fun SettingsScreen(
                         color = SettingsText
                     )
                     Text(
-                        text = "Manage your personal information",
+                        text = "Your account information",
                         fontSize = 14.sp,
                         color = SettingsMuted
                     )
