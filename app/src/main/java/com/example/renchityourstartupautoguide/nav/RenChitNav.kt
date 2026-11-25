@@ -25,7 +25,7 @@ import com.example.renchityourstartupautoguide.screens.WarningListScreen
 import com.example.renchityourstartupautoguide.screens.WarningDetailScreen
 import com.example.renchityourstartupautoguide.viewmodel.AuthViewModel
 import com.example.renchityourstartupautoguide.model.RenChitApplication
-import com.example.renchityourstartupautoguide.model.RenChitFactory
+import com.example.renchityourstartupautoguide.factory.RenChitFactory
 import com.example.renchityourstartupautoguide.viewmodel.RenChitViewModel
 import com.example.renchityourstartupautoguide.viewmodel.ChecklistViewModel
 import com.example.renchityourstartupautoguide.screens.ChecklistHubScreen
@@ -42,8 +42,10 @@ import com.example.renchityourstartupautoguide.screens.PrivacyPolicyScreen
 import com.example.renchityourstartupautoguide.screens.TermsAndConditionsScreen
 import com.example.renchityourstartupautoguide.screens.VehicleExplorerScreen
 import com.example.renchityourstartupautoguide.screens.VehicleDetailScreen
-
-
+import com.example.renchityourstartupautoguide.viewmodel.GarageViewModel
+import com.example.renchityourstartupautoguide.screens.GarageScreen
+import com.example.renchityourstartupautoguide.screens.AddEditVehicleScreen
+import com.example.renchityourstartupautoguide.viewmodel.UserViewModel
 
 @Composable
 fun RenChitApp() {
@@ -59,6 +61,8 @@ fun RenChitApp() {
     val viewModel: RenChitViewModel = viewModel(factory = factory)
     val authViewModel: AuthViewModel = viewModel(factory = factory)
     val checklistViewModel: ChecklistViewModel = viewModel(factory = factory)
+    val garageViewModel: GarageViewModel = viewModel(factory = factory)
+    val userViewModel: UserViewModel = viewModel(factory = factory)
 
     NavHost(navController = navController, startDestination = "splash") {
 
@@ -71,7 +75,7 @@ fun RenChitApp() {
         }
 
         composable("register") {
-            RegisterScreen(navController, authViewModel)
+            RegisterScreen(navController, authViewModel, userViewModel)
         }
 
         composable("home") {
@@ -85,13 +89,13 @@ fun RenChitApp() {
                 onLearn = { navController.navigate("learnHub") },
                 onMaintenance = { navController.navigate("maintenanceHub") },
                 onExploreGuide = { navController.navigate("vehicleExplorer") },
+                onMyGarage = { navController.navigate("garage") },
                 onSearchParts = { navController.navigate("partSearch") },
                 onSettingsClick = {
                     navController.navigate("settings")
                 },
                 onLogout = {
                     authViewModel.logout()
-                    checklistViewModel.clear()
                     navController.navigate("login") {
                         popUpTo("home") { inclusive = true }
                     }
@@ -105,7 +109,6 @@ fun RenChitApp() {
                     navController.navigate("checklistList/$categoryId")
                 },
                 onBack = {
-                    checklistViewModel.clear()
                     navController.popBackStack()
                 }
             )
@@ -393,6 +396,32 @@ fun RenChitApp() {
                 onBack = { navController.popBackStack() }
             )
         }
+        // ---------- My Garage ----------
+        composable("garage") {
+            GarageScreen(
+                viewModel = garageViewModel,
+                onAddVehicle = { navController.navigate("addEditVehicle") },
+                onEditVehicle = { vehicleId ->
+                    navController.navigate("addEditVehicle?vehicleId=$vehicleId")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = "addEditVehicle?vehicleId={vehicleId}",
+            arguments = listOf(navArgument("vehicleId") {
+                type = NavType.StringType
+                defaultValue = ""
+            })
+        ) { backStackEntry ->
+            val rawId = backStackEntry.arguments?.getString("vehicleId") ?: ""
+            AddEditVehicleScreen(
+                viewModel = garageViewModel,
+                vehicleId = rawId.ifEmpty { null },
+                onDone = { navController.popBackStack() }
+            )
+        }
         // ---------- Settings ----------
         composable("settings") {
             SettingsScreen(
@@ -407,7 +436,6 @@ fun RenChitApp() {
                 },
                 onLogout = {
                     authViewModel.logout()
-                    checklistViewModel.clear()
 
                     navController.navigate("login") {
                         popUpTo("home") {

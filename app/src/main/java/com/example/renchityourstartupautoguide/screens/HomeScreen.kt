@@ -84,6 +84,7 @@ fun HomeScreen(
     onSearchParts: () -> Unit,
     onSettingsClick: () -> Unit,
     onExploreGuide: () -> Unit,
+    onMyGarage: () -> Unit,
     onLogout: () -> Unit
 ) {
     Scaffold(
@@ -104,8 +105,7 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            HomeHeader(username = username, onLogout = onLogout)
-
+            HomeHeader(username = username, onMyGarage = onMyGarage, onLogout = onLogout)
             Spacer(Modifier.height(16.dp))
             HeroCard(onExplore = onExploreGuide)
 
@@ -171,7 +171,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeHeader(username: String, onLogout: () -> Unit) {
+private fun HomeHeader(username: String, onMyGarage: () -> Unit, onLogout: () -> Unit) {
     var menuOpen by remember { mutableStateOf(false) }
 
     Row(
@@ -234,6 +234,13 @@ private fun HomeHeader(username: String, onLogout: () -> Unit) {
                     onClick = {
                         menuOpen = false
                         onLogout()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("My Garage", color = PrimaryText) },
+                    onClick = {
+                        menuOpen = false
+                        onMyGarage()
                     }
                 )
             }

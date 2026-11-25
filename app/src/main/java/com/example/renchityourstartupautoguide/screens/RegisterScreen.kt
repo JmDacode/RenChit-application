@@ -16,11 +16,13 @@ import com.example.renchityourstartupautoguide.ui.theme.OxideBronze
 import com.example.renchityourstartupautoguide.ui.theme.PrimaryText
 import com.example.renchityourstartupautoguide.ui.theme.WarmIvory
 import com.example.renchityourstartupautoguide.ui.theme.renChitFieldColors
+import com.example.renchityourstartupautoguide.viewmodel.UserViewModel
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    viewModel: AuthViewModel
+    viewModel: AuthViewModel,
+    userViewModel: UserViewModel
 ) {
     val context = LocalContext.current
 
@@ -105,6 +107,8 @@ fun RegisterScreen(
                             ).show()
 
                             if (success) {
+                                userViewModel.addUser(email.trim())
+
                                 navController.navigate("home") {
                                     popUpTo("register") {
                                         inclusive = true
