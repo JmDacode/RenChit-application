@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.example.renchityourstartupautoguide.ui.theme.OxideBronze
 
 // Shows the photo named imageName from res/drawable.
-// If the photo has not been added yet, a car icon tile is shown instead.
 @Composable
 fun VehiclePhoto(imageName: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
