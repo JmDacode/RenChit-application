@@ -172,7 +172,7 @@ fun SettingsScreen(
                             color = SettingsText
                         )
                         Text(
-                            text = "Version 1.0.0",
+                            text = "Version 1.0.1",
                             fontSize = 13.sp,
                             color = SettingsMuted
                         )
