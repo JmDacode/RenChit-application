@@ -85,6 +85,7 @@ fun HomeScreen(
     onSettingsClick: () -> Unit,
     onExploreGuide: () -> Unit,
     onMyGarage: () -> Unit,
+    onSendFeedback: () -> Unit,
     onLogout: () -> Unit
 ) {
     Scaffold(
@@ -105,7 +106,7 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            HomeHeader(username = username, onMyGarage = onMyGarage, onLogout = onLogout)
+            HomeHeader(username = username, onMyGarage = onMyGarage, onSendFeedback = onSendFeedback, onLogout = onLogout)
             Spacer(Modifier.height(16.dp))
             HeroCard(onExplore = onExploreGuide)
 
@@ -171,7 +172,9 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeHeader(username: String, onMyGarage: () -> Unit, onLogout: () -> Unit) {
+private fun HomeHeader(username: String, onMyGarage: () -> Unit, onSendFeedback: () -> Unit, onLogout: () -> Unit)
+
+{
     var menuOpen by remember { mutableStateOf(false) }
 
     Row(
@@ -228,19 +231,26 @@ private fun HomeHeader(username: String, onMyGarage: () -> Unit, onLogout: () ->
                     color = SecondaryText,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
+                DropdownMenuItem(
+                    text = { Text("My Garage", color = PrimaryText) },
+                    onClick = {
+                        menuOpen = false
+                        onMyGarage()
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Send Feedback", color = PrimaryText) },
+                    onClick = {
+                        menuOpen = false
+                        onSendFeedback()
+                    }
+                )
                 HorizontalDivider(color = DividerTaupe)
                 DropdownMenuItem(
                     text = { Text("Log out", color = PrimaryText) },
                     onClick = {
                         menuOpen = false
                         onLogout()
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text("My Garage", color = PrimaryText) },
-                    onClick = {
-                        menuOpen = false
-                        onMyGarage()
                     }
                 )
             }

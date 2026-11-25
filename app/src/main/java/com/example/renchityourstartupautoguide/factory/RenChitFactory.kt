@@ -11,6 +11,10 @@ import com.example.renchityourstartupautoguide.viewmodel.GarageViewModel
 import com.example.renchityourstartupautoguide.repository.GarageRepository
 import com.example.renchityourstartupautoguide.repository.UserRepository
 import com.example.renchityourstartupautoguide.viewmodel.UserViewModel
+import com.example.renchityourstartupautoguide.repository.MaintenanceLogRepository
+import com.example.renchityourstartupautoguide.viewmodel.MaintenanceLogViewModel
+import com.example.renchityourstartupautoguide.repository.FeedbackRepository
+import com.example.renchityourstartupautoguide.viewmodel.FeedbackViewModel
 
 class RenChitFactory(
     private val repository: SavedRepairRepository,
@@ -45,6 +49,15 @@ class RenChitFactory(
         {
             @Suppress("UNCHECKED_CAST")
             return UserViewModel(UserRepository()) as T
+        }
+        if (modelClass.isAssignableFrom(MaintenanceLogViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return MaintenanceLogViewModel(MaintenanceLogRepository()) as T
+        }
+        if (modelClass.isAssignableFrom(FeedbackViewModel::class.java))
+        {
+            @Suppress("UNCHECKED_CAST")
+            return FeedbackViewModel(FeedbackRepository()) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel")

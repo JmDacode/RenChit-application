@@ -8,6 +8,6 @@ data class GarageVehicle(
     val model: String = "",
     val year: Int = 0,
     val odometer: Int = 0,
-    val status: String = "active",
-    val createdAt: Long = 0L
+    val createdAt: Long = System.currentTimeMillis(),
+    val isArchived: Int = 0
 )

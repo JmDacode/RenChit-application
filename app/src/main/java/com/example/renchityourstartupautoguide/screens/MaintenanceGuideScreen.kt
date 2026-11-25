@@ -49,6 +49,7 @@ import com.example.renchityourstartupautoguide.ui.theme.WarmIvory
 fun MaintenanceGuideScreen(
     guideId: String,
     onSelectPart: (String) -> Unit,
+    onLogService: (String) -> Unit,
     onBack: () -> Unit
 ) {
     val guide = MaintenanceData.getGuide(guideId)
@@ -219,7 +220,17 @@ fun MaintenanceGuideScreen(
                     MaintenanceQuiz(quiz = quiz)
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Button(
+                    onClick = { onLogService(guide.id) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 32.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = OxideBronze)
+                ) {
+                    Text("Log this service")
+                }
             }
         }
     }

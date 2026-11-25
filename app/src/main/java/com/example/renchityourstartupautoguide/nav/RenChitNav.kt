@@ -46,6 +46,11 @@ import com.example.renchityourstartupautoguide.viewmodel.GarageViewModel
 import com.example.renchityourstartupautoguide.screens.GarageScreen
 import com.example.renchityourstartupautoguide.screens.AddEditVehicleScreen
 import com.example.renchityourstartupautoguide.viewmodel.UserViewModel
+import com.example.renchityourstartupautoguide.viewmodel.MaintenanceLogViewModel
+import com.example.renchityourstartupautoguide.screens.MaintenanceLogScreen
+import com.example.renchityourstartupautoguide.screens.AddEditMaintenanceLogScreen
+import com.example.renchityourstartupautoguide.screens.FeedbackScreen
+import com.example.renchityourstartupautoguide.viewmodel.FeedbackViewModel
 
 @Composable
 fun RenChitApp() {
@@ -63,6 +68,8 @@ fun RenChitApp() {
     val checklistViewModel: ChecklistViewModel = viewModel(factory = factory)
     val garageViewModel: GarageViewModel = viewModel(factory = factory)
     val userViewModel: UserViewModel = viewModel(factory = factory)
+    val maintenanceLogViewModel: MaintenanceLogViewModel = viewModel(factory = factory)
+    val feedbackViewModel: FeedbackViewModel = viewModel(factory = factory)
 
     NavHost(navController = navController, startDestination = "splash") {
 
@@ -90,6 +97,7 @@ fun RenChitApp() {
                 onMaintenance = { navController.navigate("maintenanceHub") },
                 onExploreGuide = { navController.navigate("vehicleExplorer") },
                 onMyGarage = { navController.navigate("garage") },
+                onSendFeedback = { navController.navigate("feedback") },
                 onSearchParts = { navController.navigate("partSearch") },
                 onSettingsClick = {
                     navController.navigate("settings")
@@ -374,6 +382,9 @@ fun RenChitApp() {
                 onSelectPart = { partId ->
                     navController.navigate("learnPart/$partId")
                 },
+                onLogService = { id ->
+                    navController.navigate("addEditMaintenanceLog?guideId=$id")
+                },
                 onBack = { navController.popBackStack() }
             )
         }
@@ -404,6 +415,9 @@ fun RenChitApp() {
                 onEditVehicle = { vehicleId ->
                     navController.navigate("addEditVehicle?vehicleId=$vehicleId")
                 },
+                onOpenHistory = { vehicleId ->
+                    navController.navigate("maintenanceLog/$vehicleId")
+                },
                 onBack = { navController.popBackStack() }
             )
         }
@@ -419,6 +433,61 @@ fun RenChitApp() {
             AddEditVehicleScreen(
                 viewModel = garageViewModel,
                 vehicleId = rawId.ifEmpty { null },
+                onDone = { navController.popBackStack() }
+            )
+        }
+        // ---------- Maintenance Log ----------
+        composable("maintenanceLog/{vehicleId}") { backStackEntry ->
+            val vehicleId = backStackEntry.arguments?.getString("vehicleId") ?: ""
+            MaintenanceLogScreen(
+                vehicleId = vehicleId,
+                garageViewModel = garageViewModel,
+                logViewModel = maintenanceLogViewModel,
+                onAddLog = {
+                    navController.navigate("addEditMaintenanceLog?vehicleId=$vehicleId")
+                },
+                onEditLog = { logId ->
+                    navController.navigate(
+                        "addEditMaintenanceLog?vehicleId=$vehicleId&logId=$logId"
+                    )
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable("feedback") {
+            FeedbackScreen(
+                viewModel = feedbackViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            route = "addEditMaintenanceLog?vehicleId={vehicleId}&guideId={guideId}&logId={logId}",
+            arguments = listOf(
+                navArgument("vehicleId") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument("guideId") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument("logId") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )
+        ) { backStackEntry ->
+            val rawVehicleId = backStackEntry.arguments?.getString("vehicleId") ?: ""
+            val rawGuideId = backStackEntry.arguments?.getString("guideId") ?: ""
+            val rawLogId = backStackEntry.arguments?.getString("logId") ?: ""
+
+            AddEditMaintenanceLogScreen(
+                vehicleId = rawVehicleId.ifEmpty { null },
+                guideId = rawGuideId.ifEmpty { null },
+                logId = rawLogId.ifEmpty { null },
+                garageViewModel = garageViewModel,
+                logViewModel = maintenanceLogViewModel,
+                onOpenGarage = { navController.navigate("garage") },
                 onDone = { navController.popBackStack() }
             )
         }

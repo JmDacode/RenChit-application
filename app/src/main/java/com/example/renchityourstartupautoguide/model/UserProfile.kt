@@ -1,7 +1,8 @@
 package com.example.renchityourstartupautoguide.model
 
 data class UserProfile(
+    val id: String = "",
     val email: String = "",
-    val status: String = "active",
-    val createdAt: Long = 0L
+    val createdAt: Long = System.currentTimeMillis(),
+    val isArchived: Int = 0
 )

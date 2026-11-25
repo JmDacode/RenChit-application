@@ -1,76 +1,86 @@
 package com.example.renchityourstartupautoguide.repository
 
-import android.util.Log
 import com.example.renchityourstartupautoguide.model.GarageVehicle
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 class GarageRepository {
 
     private val db = FirebaseFirestore.getInstance()
+    private val collectionPath = "coll_garage"
 
-    private val garageCollection = db.collection("coll_garage")
+    fun getVehicles(
+        onResult: (List<GarageVehicle>) -> Unit
+    ) {
 
-    // Read: fetch all active vehicles
-    fun getVehicles(onResult: (List<GarageVehicle>) -> Unit) {
-        garageCollection
-            .whereEqualTo("status", "active")
-            .get()
-            .addOnSuccessListener { result ->
-                val vehicles = result.documents
-                    .mapNotNull { doc ->
-                        doc.toObject(GarageVehicle::class.java)?.copy(id = doc.id)
-                    }
-                    .sortedByDescending { it.createdAt }
+        db.collection(collectionPath)
+            .addSnapshotListener { snapshots, error ->
 
-                onResult(vehicles)
-            }
-            .addOnFailureListener { error ->
-                Log.e("GarageRepository", "Could not fetch vehicles", error)
-                onResult(emptyList())
+                if (error != null) {
+                    println("Listen failed: ${error.message}")
+                    onResult(emptyList())
+                    return@addSnapshotListener
+                }
+
+                if (snapshots != null) {
+
+                    val vehicles = snapshots.documents.map { document ->
+
+                        GarageVehicle(
+                            id = document.id,
+                            nickname = document.getString("nickname") ?: "",
+                            vehicleTypeId = document.getString("vehicleTypeId") ?: "",
+                            make = document.getString("make") ?: "",
+                            model = document.getString("model") ?: "",
+                            year = document.getLong("year")?.toInt() ?: 0,
+                            odometer = document.getLong("odometer")?.toInt() ?: 0,
+                            createdAt = document.getLong("createdAt")
+                                ?: System.currentTimeMillis(),
+                            isArchived = document.getLong("isArchived")?.toInt() ?: 0
+                        )
+
+                    }.filter { it.isArchived == 0 }
+                        .sortedByDescending { it.createdAt }
+
+                    onResult(vehicles)
+                }
             }
     }
 
-    // Create: add a vehicle
-    fun addVehicle(vehicle: GarageVehicle, onResult: (Boolean) -> Unit) {
-        garageCollection
-            .add(vehicle)
-            .addOnSuccessListener { onResult(true) }
-            .addOnFailureListener { error ->
-                Log.e("GarageRepository", "Could not add vehicle", error)
-                onResult(false)
-            }
-    }
+    suspend fun addVehicle(vehicle: GarageVehicle) {
 
-    // Update: change the fields of an existing vehicle
-    fun updateVehicle(vehicle: GarageVehicle, onResult: (Boolean) -> Unit) {
-        val updates = mapOf<String, Any>(
+        val document = db.collection(collectionPath)
+            .document()
+
+        val data = hashMapOf<String, Any>(
             "nickname" to vehicle.nickname,
             "vehicleTypeId" to vehicle.vehicleTypeId,
             "make" to vehicle.make,
             "model" to vehicle.model,
             "year" to vehicle.year,
-            "odometer" to vehicle.odometer
+            "odometer" to vehicle.odometer,
+            "createdAt" to vehicle.createdAt,
+            "isArchived" to vehicle.isArchived
         )
 
-        garageCollection
-            .document(vehicle.id)
-            .update(updates)
-            .addOnSuccessListener { onResult(true) }
-            .addOnFailureListener { error ->
-                Log.e("GarageRepository", "Could not update vehicle", error)
-                onResult(false)
-            }
+        document.set(data).await()
+
     }
 
-    // Archive: keep the document, just mark it archived
-    fun archiveVehicle(vehicleId: String, onResult: (Boolean) -> Unit) {
-        garageCollection
-            .document(vehicleId)
-            .update("status", "archived")
-            .addOnSuccessListener { onResult(true) }
-            .addOnFailureListener { error ->
-                Log.e("GarageRepository", "Could not archive vehicle", error)
-                onResult(false)
-            }
+    fun updateVehicle(
+        id: String,
+        updates: Map<String, Any>
+    ) {
+
+        db.collection(collectionPath)
+            .document(id)
+            .update(updates)
+
+    }
+
+    fun deleteVehicle(id: String) {
+        db.collection(collectionPath)
+            .document(id)
+            .update("isArchived", 1)
     }
 }

@@ -1,6 +1,5 @@
 package com.example.renchityourstartupautoguide.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,15 +50,11 @@ fun GarageScreen(
     viewModel: GarageViewModel,
     onAddVehicle: () -> Unit,
     onEditVehicle: (String) -> Unit,
+    onOpenHistory: (String) -> Unit,
     onBack: () -> Unit
 ) {
     val vehicles by viewModel.vehicles.collectAsState()
     var vehicleToDelete by remember { mutableStateOf<GarageVehicle?>(null) }
-    val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        viewModel.loadVehicles()
-    }
 
     Column(
         modifier = Modifier
@@ -140,6 +133,7 @@ fun GarageScreen(
                 vehicles.forEach { vehicle ->
                     GarageVehicleCard(
                         vehicle = vehicle,
+                        onHistory = { onOpenHistory(vehicle.id) },
                         onEdit = { onEditVehicle(vehicle.id) },
                         onDelete = { vehicleToDelete = vehicle }
                     )
@@ -159,15 +153,7 @@ fun GarageScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.archiveVehicle(vehicle.id) { success ->
-                            if (!success) {
-                                Toast.makeText(
-                                    context,
-                                    "Could not delete the vehicle",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
+                        viewModel.deleteVehicle(vehicle.id)
                         vehicleToDelete = null
                     }
                 ) {
@@ -190,6 +176,7 @@ private fun garageVehicleTitle(vehicle: GarageVehicle): String =
 private fun GarageVehicleCard(
     vehicle: GarageVehicle,
     onEdit: () -> Unit,
+    onHistory: () -> Unit,
     onDelete: () -> Unit
 ) {
     val typeName = VehicleData.getType(vehicle.vehicleTypeId)?.name ?: vehicle.vehicleTypeId
@@ -242,6 +229,9 @@ private fun GarageVehicleCard(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
+            TextButton(onClick = onHistory) {
+                Text("History", color = OxideBronze)
+            }
             TextButton(onClick = onEdit) {
                 Text("Edit", color = OxideBronze)
             }
