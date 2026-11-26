@@ -59,7 +59,7 @@ fun MaintenanceHubScreen(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Take care of your car.",
+                text = "Take care of your car",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = PrimaryText
