@@ -79,7 +79,7 @@ fun GarageScreen(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Your vehicles.",
+                text = "Your vehicles",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = PrimaryText
