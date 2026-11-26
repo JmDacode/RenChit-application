@@ -17,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.renchityourstartupautoguide.ui.theme.OxideBronze
 
-// Shows the photo named imageName from res/drawable.
 @Composable
 fun VehiclePhoto(imageName: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current

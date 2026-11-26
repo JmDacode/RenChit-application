@@ -24,7 +24,6 @@ import com.example.renchityourstartupautoguide.ui.theme.OxideBronze
 import com.example.renchityourstartupautoguide.ui.theme.PrimaryText
 import com.example.renchityourstartupautoguide.ui.theme.SecondaryText
 import com.example.renchityourstartupautoguide.ui.theme.WarmIvory
-import androidx.compose.foundation.layout.aspectRatio
 
 @Composable
 fun VehicleDetailScreen(

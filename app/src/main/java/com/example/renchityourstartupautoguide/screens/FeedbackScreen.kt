@@ -63,7 +63,6 @@ fun FeedbackScreen(
     val myEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
 
     val allFeedbacks by viewModel.feedbacks.collectAsState()
-    val myFeedbacks = allFeedbacks.filter { it.email == myEmail }
 
     var editingId by remember { mutableStateOf<String?>(null) }
     var rating by remember { mutableStateOf(0) }
@@ -267,7 +266,7 @@ fun FeedbackScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "MY FEEDBACK",
+                text = "ALL FEEDBACK",
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp,
@@ -276,14 +275,14 @@ fun FeedbackScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (myFeedbacks.isEmpty()) {
+            if (allFeedbacks.isEmpty()) {
                 Text(
-                    text = "You haven't sent any feedback yet.",
+                    text = "No feedback has been sent yet.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = SecondaryText
                 )
             } else {
-                myFeedbacks.forEach { item ->
+                allFeedbacks.forEach { item ->
                     FeedbackCard(
                         feedback = item,
                         onEdit = {
@@ -307,7 +306,7 @@ fun FeedbackScreen(
         AlertDialog(
             onDismissRequest = { feedbackToDelete = null },
             title = { Text("Delete feedback?") },
-            text = { Text("This removes your feedback from the list.") },
+            text = { Text("This removes the feedback from the list.") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -354,7 +353,7 @@ private fun FeedbackCard(
         Spacer(modifier = Modifier.height(2.dp))
 
         Text(
-            text = dateText,
+            text = "$dateText by ${feedback.email}",
             style = MaterialTheme.typography.bodySmall,
             color = SecondaryText
         )
