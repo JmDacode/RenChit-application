@@ -57,7 +57,7 @@ fun VehicleExplorerScreen(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Know your vehicle type.",
+                text = "Know your vehicle type",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = PrimaryText

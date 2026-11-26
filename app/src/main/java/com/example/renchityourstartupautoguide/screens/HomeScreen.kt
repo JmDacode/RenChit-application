@@ -279,7 +279,7 @@ private fun HeroCard(onExplore: () -> Unit) {
             Spacer(Modifier.height(10.dp))
 
             Text(
-                text = "Know your car.",
+                text = "Know your car",
                 fontSize = 32.sp,
                 lineHeight = 38.sp,
                 fontWeight = FontWeight.Bold,
